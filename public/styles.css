@@ -5,23 +5,19 @@ body {
     padding: 0;
     background-color: #1f1f23;
 }
-
 body {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
 }
-
 h1 {
     color: #ffffff;
     margin-bottom: 20px;
 }
-
 p {
     color: #999999;
     margin-bottom: 20px;
 }
-
 a {
     color: #6568ff;
 }
