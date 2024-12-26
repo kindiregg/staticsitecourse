@@ -1,6 +1,7 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html
+from htmlnode import LeafNode
 
 
 class TestTextNode(unittest.TestCase):
@@ -35,6 +36,26 @@ class TestTextNode(unittest.TestCase):
             "TextNode(This is a text node, text, https://www.boot.dev)", repr(node)
         )
 
+class TestNodeToHtml(unittest.TestCase):
+    def test_standard_types1(self):
+        node = text_node_to_html(TextNode("Wow I sure love OOP", TextType.TEXT))
+        self.assertEqual(node, LeafNode("", "Wow I sure love OOP"))
+
+    def test_standard_types2(self):
+        node = text_node_to_html(TextNode("Wow I sure love OOP", TextType.CODE))
+        self.assertEqual(node, LeafNode("code", "Wow I sure love OOP"))
+
+    def test_blank_text_type(self):
+        text_node = TextNode("Wow I sure love OOP", TextType)
+        with self.assertRaises(Exception) as context:
+            text_node_to_html(text_node)
+
+        self.assertTrue("invalid text type" in str(context.exception))
+
+    def test_invalid_text_type(self):
+        with self.assertRaises(AttributeError):
+            # RICH is not supported
+            text_node_to_html_node(TextNode("Wow I sure love OOP", TextType.RICH))
 
 if __name__ == "__main__":
     unittest.main()
