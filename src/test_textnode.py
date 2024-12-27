@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType, text_node_to_html
+from textnode import TextNode, TextType, text_node_to_html_node
 from htmlnode import LeafNode
 
 
@@ -38,17 +38,17 @@ class TestTextNode(unittest.TestCase):
 
 class TestNodeToHtml(unittest.TestCase):
     def test_standard_types1(self):
-        node = text_node_to_html(TextNode("Wow I sure love OOP", TextType.TEXT))
+        node = text_node_to_html_node(TextNode("Wow I sure love OOP", TextType.TEXT))
         self.assertEqual(node, LeafNode("", "Wow I sure love OOP"))
 
     def test_standard_types2(self):
-        node = text_node_to_html(TextNode("Wow I sure love OOP", TextType.CODE))
+        node = text_node_to_html_node(TextNode("Wow I sure love OOP", TextType.CODE))
         self.assertEqual(node, LeafNode("code", "Wow I sure love OOP"))
 
     def test_blank_text_type(self):
         text_node = TextNode("Wow I sure love OOP", TextType)
         with self.assertRaises(Exception) as context:
-            text_node_to_html(text_node)
+            text_node_to_html_node(text_node)
 
         self.assertTrue("invalid text type" in str(context.exception))
 

@@ -24,7 +24,7 @@ class TextNode():
         type_string = self.text_type.value
         return f"TextNode({self.text}, {type_string}, {self.url})"
     
-def text_node_to_html(text_node):
+def text_node_to_html_node(text_node):
     if text_node.text_type == TextType.TEXT:
         return LeafNode("",text_node.text)
     elif text_node.text_type == TextType.BOLD:
@@ -39,3 +39,4 @@ def text_node_to_html(text_node):
         return LeafNode("img","", {"src": text_node.url, "alt": text_node.text})
     else:
         raise Exception("invalid text type")
+
