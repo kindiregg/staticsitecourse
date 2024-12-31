@@ -3,7 +3,8 @@ from inline_markdown import (split_nodes_delimiter,
                             extract_markdown_images, 
                             extract_markdown_links, 
                             split_nodes_image,
-                            split_nodes_link)
+                            split_nodes_link,
+                            text_to_textnodes)                           
 from textnode import TextNode, TextType
 
 
@@ -179,5 +180,54 @@ class TestSplitImageNode(unittest.TestCase):
             new_nodes,
         )
 
+class TestFullTextSplit(unittest.TestCase):
+    def test_text_to_textnodes_types(self):
+        text = "This is **text** with an *italic* word"
+        nodes = text_to_textnodes(text)
+        
+        self.assertEqual(nodes[0].text_type, TextType.TEXT)
+        self.assertEqual(nodes[1].text_type, TextType.BOLD)
+        self.assertEqual(nodes[2].text_type, TextType.TEXT)
+        self.assertEqual(nodes[3].text_type, TextType.ITALIC)
+
+    def test_text_to_textnodes_comprehensive(self):
+        text = "This is **bold** and *italic* and `code` with a ![image](http://image.jpg) and a [link](http://link.com)"
+        nodes = text_to_textnodes(text)
+        
+        self.assertEqual(nodes[0].text_type, TextType.TEXT)
+        self.assertEqual(nodes[1].text_type, TextType.BOLD)
+        self.assertEqual(nodes[2].text_type, TextType.TEXT)
+        self.assertEqual(nodes[3].text_type, TextType.ITALIC)
+        self.assertEqual(nodes[4].text_type, TextType.TEXT)
+        self.assertEqual(nodes[5].text_type, TextType.CODE)
+        self.assertEqual(nodes[6].text_type, TextType.TEXT)
+        self.assertEqual(nodes[7].text_type, TextType.IMAGE)
+        self.assertEqual(nodes[8].text_type, TextType.TEXT)
+        self.assertEqual(nodes[9].text_type, TextType.LINK)
+
+        # Test URLs for image and link
+        self.assertEqual(nodes[7].url, "http://image.jpg")
+        self.assertEqual(nodes[9].url, "http://link.com")
+
+    def test_text_to_textnodes(self):
+        nodes = text_to_textnodes(
+            "This is **text** with an *italic* word and a `code block` and an ![image](https://i.imgur.com/zjjcJKZ.png) and a [link](https://boot.dev)"
+        )
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            nodes,
+        )
+        
 if __name__ == "__main__":
     unittest.main()
