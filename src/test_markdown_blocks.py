@@ -3,6 +3,7 @@ from block_markdown import (
     markdown_to_html_node,
     markdown_to_blocks,
     block_to_block_type,
+    extract_title,
     block_type_paragraph,
     block_type_heading,
     block_type_code,
@@ -153,6 +154,32 @@ this is paragraph text
             "<div><blockquote>This is a blockquote block</blockquote><p>this is paragraph text</p></div>",
         )
 
+    def test_header_one(self):
+        md = """
+# this is an h1
+
+# this is also an h1?
+
+this is paragraph text
+
+## this is an h2
+"""
+        h1 = extract_title(md)
+        self.assertEqual(h1, "this is an h1")
+
+    def test_header_one_invalid(self):
+        md = """
+# this is an h1
+# this is also an h1?
+
+this is paragraph text
+
+## this is an h2
+"""
+        with self.assertRaises(Exception) as context:
+            extract_title(md)
+
+        self.assertTrue("Invalid markdown syntax" in str(context.exception))
 
 if __name__ == "__main__":
     unittest.main()

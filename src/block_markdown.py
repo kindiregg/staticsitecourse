@@ -1,6 +1,6 @@
 from inline_markdown import text_to_textnodes
 from htmlnode import ParentNode
-from textnode import text_node_to_html_node, TextNode
+from textnode import text_node_to_html_node, TextNode, TextType
 import re
 
 def markdown_to_blocks(markdown):
@@ -59,6 +59,7 @@ def text_to_children(text):
         html_nodes.append(text_node_to_html_node(node))
     return html_nodes
     
+# returns ParentNode containing all markdown as children nodes    
 def markdown_to_html_node(markdown):   
     markdown_blocks = markdown_to_blocks(markdown)
     children_nodes = []
@@ -95,8 +96,8 @@ def heading_to_html_node(block):
     return ParentNode(header_tag, html_nodes)
 
 def code_to_html_node(block):
-    code_content = block.lstrip("`").strip()
-    text_node = TextNode(code_content, "text")
+    code_content = block.lstrip("```").strip()
+    text_node = TextNode(code_content, TextType.CODE)
     html_node = text_node_to_html_node(text_node)
     code_node = ParentNode("code", [html_node])
     return ParentNode("pre", [code_node])
@@ -114,7 +115,7 @@ def ulist_to_html_node(block):
     lines = block.split("\n")
     cleaned_lines_nodes = []
     for line in lines:
-        stripped_line = line.lstrip("-").strip()
+        stripped_line = line[2:].strip()
         html_line = text_to_children(stripped_line)
         cleaned_lines_nodes.append(ParentNode("li", html_line))
     return ParentNode("ul", cleaned_lines_nodes)
@@ -127,3 +128,14 @@ def olist_to_html_node(block):
         html_line = text_to_children(stripped_line)
         cleaned_lines_nodes.append(ParentNode("li", html_line))
     return ParentNode("ol", cleaned_lines_nodes)
+
+def extract_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    header = blocks[0]
+    if header.count("#") > 1:
+        raise Exception("Invalid markdown syntax")
+    elif header.startswith("# "):
+        return header.lstrip("#").strip()
+    else:
+        raise Exception("Missing header 1")
+    

@@ -9,9 +9,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         if node.text_type != TextType.TEXT:
             new_nodes.append(node)
             continue
-        if delimiter == "*" and node.text.startswith("* "):
-            new_nodes.append(node)
-            continue
 
         split_nodes = []
         sections = node.text.split(delimiter)
@@ -102,14 +99,12 @@ def text_to_textnodes(text):
     nodes = [TextNode(text, TextType.TEXT)]
     # Process each delimiter type
     nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    print("After bold:", [(node.text, node.text_type) for node in nodes])
     nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
+    print("After italic:", [(node.text, node.text_type) for node in nodes])
     nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
     # Process links and images
     nodes = split_nodes_link(nodes)
     nodes = split_nodes_image(nodes)
     return nodes
 
-# test_text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-# print(text_to_textnodes(test_text))
-# nodes = split_nodes_delimiter([TextNode(test_text, TextType.TEXT)], "**", TextType.BOLD)
-# print(type(nodes[0].text_type))  # Should show <enum 'TextType'>

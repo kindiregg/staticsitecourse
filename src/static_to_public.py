@@ -17,7 +17,7 @@ def collect_paths(base_path):
         else:
             file_list.append(content_path)
             public_path = content_path.replace("/static/", "/public/", 1)
-            print(f"{content_path} -> {public_path}")
+            print(f" * {content_path} -> {public_path}")
 
     return file_list
 
