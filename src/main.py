@@ -1,8 +1,8 @@
 from textnode import TextNode, TextType
+from static_to_public import copy_static_to_public
 
 def main():
-    node = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
-    print(node)
+    copy_static_to_public()
 
 if __name__ == "__main__":
     main()

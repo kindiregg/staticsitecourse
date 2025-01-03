@@ -116,7 +116,6 @@ class TextExtractMarkdown(unittest.TestCase):
         result = [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")]
         self.assertEqual(extract_markdown_links(text), result)
 
-
 class TestSplitImageNode(unittest.TestCase):
     def test_split_image(self):
         node = TextNode(
